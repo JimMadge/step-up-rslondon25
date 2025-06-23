@@ -1,3 +1,6 @@
 [submodule "reveal.js"]
 	path = reveal.js
 	url = git@github.com:hakimel/reveal.js.git
+[submodule "assets/Font-Awesome"]
+	path = assets/fontawesome
+	url = git@github.com:FortAwesome/Font-Awesome.git
