@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Harnessing the power of AIRR supercomputers for trusted research</title>
+
+        <link rel="stylesheet" href="reveal.js/dist/reset.css">
+        <link rel="stylesheet" href="reveal.js/dist/reveal.css">
+        <link rel="stylesheet" href="reveal.js/dist/theme/moon.css">
+
+        <!-- Theme used for syntax highlighted code -->
+        <link rel="stylesheet" href="reveal.js/plugin/highlight/monokai.css">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="assets/fontawesome/css/all.css">
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <!-- Introduction -->
+                <section>
+                    <h2>Harnessing the power of AIRR supercomputers for trusted research</h2>
+                    <p>Jim Madge</p>
+                    <p>Alan Turing Institute</p>
+                    <aside data-markdown class="notes">
+                        - …
+                    </aside>
+                </section>
+                <!-- Pitch -->
+                <section>
+                    <h3>Why sensitive data?</h3>
+                    <figure>
+                        <img src="static/DataEcosystem.jpg" width="80%">
+                        <figcaption>Data Ecosystem by Scriberia. Used under CC-BY 4.0 <a href="https://doi.org/10.5281/zenodo.8169292">10.5281/zenodo.8169292</a></figcaption>
+                    </figure>
+                    <aside data-markdown class="notes">
+                        - Research uses data
+                        - Research can produce results that benefit society
+                        - Some data useful for research is sensitive including
+                            - Medical data
+                            - Administrative data
+                            - Financial data
+                        - If we don't use it, we loose the benefits
+                        - **LINK:** But using sensitive data can be difficult
+                    </aside>
+                </section>
+                <section>
+                    <h3>Why trusted research environments?</h3>
+                    <figure>
+                        <img src="static/sensitive-data.jpg" width="65%">
+                        <figcaption>Sensitive Data by Scriberia. Used under CC-BY 4.0 <a href="https://doi.org/10.5281/zenodo.8169292">10.5281/zenodo.8169292</a></figcaption>
+                    </figure>
+                    <aside data-markdown class="notes">
+                        - Justified privacy and security concerns
+                        - TREs are a solution to that conflict
+                            - Secure environments with controls to prevent unauthorised data egress
+                            - Make more sensitive data available for research
+                        - Compared to sending data to researchers
+                            - Prevents unauthorised disclosure
+                            - Trust is more distributed (enables 5 safes)
+                        - **LINK:** Some work requires lots of computational power
+                    </aside>
+                </section>
+                <section>
+                    <h3>Why HPC?</h3>
+                    <aside data-markdown class="notes">
+                        - Parallel processing
+                        - Very fast interconnects
+                        - Large, parallel filesystems
+                        - Large, fast storage
+                        - AI in particular
+                            - Large numbers of GPUs
+                            - RDMA
+                            - Fast GPU-GPU interconnect
+                        - Expense is justified for a shared system (maintain high throughput)
+                    </aside>
+                </section>
+                <!-- The problem (or background) -->
+                <section>
+                    <section>
+                        <h3>TREs are not HPC</h3>
+                    </section>
+                    <section>
+                        <h3>HPC is not a TRE</h3>
+                    </section>
+                </section>
+                <!-- What is FRIDGE? Introduction -->
+                <section>
+                    <h3>FRIDGE</h3>
+                </section>
+                <!-- What is FRIDGE? Governance and shared responsibility -->
+                <section>
+                    <h3>Shared responsibility</h3>
+                </section>
+                <!-- What is FRIDGE? User/data workflow (high level tech) -->
+                    <!-- Backreference to governance, how the design supports governance -->
+                    <aside data-markdown class="notes">
+                        - **Challenge**: How to make HPC provider comfortable with high-risk data
+                        - **Key point**: Extend TRE governance to an enclave on the HPC system
+                        - Keep the responsibility and governance with the TRE operator
+                        - Protect the HPC provider from data protection questions
+                        - Avoids the need for complex data sharing agreements
+                        - **Link**: This informs the design!
+                        - HPC providers responsbility is
+                            - provide a secure space to build a TRE
+                            - **not** handle, process or transfer sensitive data
+                    </aside>
+                <section>
+                    <h3>Design options</h3>
+                    <section>
+                        <h4>Remote desktop TRE</h4>
+                        <aside data-markdown class="notes">
+                            - kubevirt
+                        </aside>
+                    </section>
+                    <section>
+                        <h4>Notebooks</h4>
+                        <aside data-markdown class="notes">
+                            - _E.g._ Jupyter
+                            - Difficult (impossible?) to prevent trivial egress through copy-paste
+                            - Can be workable with
+                                - Secure user devices
+                                - High levels of training
+                        </aside>
+                    </section>
+                    <section>
+                        <h4>Job dispatch</h4>
+                        <aside data-markdown class="notes">
+                            - More abstract interface
+                            - Users submit workflow definition
+                        </aside>
+                    </section>
+                </section>
+                <section>
+                    <h3>FRIDGE architecture</h3>
+                    <aside data-markdown class="notes">
+                        - TRE tenant, secured/configured by HPC provider (link back)
+                            - Connection to external trusted resource (S2S VPN)
+                            - Sensitive data on HPC, close to compute
+                            - Job submission interface
+                            - "Buckets" for intermediates, results
+                        - Advantages
+                            - Considered part of existing TRE, under it's governance
+                            - Outputs do not need to be classified, they go to a TRE
+                            - Minimal services running on HPC
+                            - Promote reproducibility with workflows
+                            - Control of allowed container images
+                        - Disadvantages
+                            - "I want a notebook"
+                            - "I want a desktop"
+                            - Probably slow for iterative, exploratory work
+                            - Learning curve for packaging code in containers, workflow format
+                    </aside>
+                </section>
+                <!-- What is FRIDGE? Implementation (Argo, Harbor, etc.) -->
+                <section>
+                    <h3>FRIDGE implementation</h3>
+                    <aside data-markdown class="notes">
+                        - Jobs
+                            - Argo Workflows
+                        - Containers
+                            - Harbor
+                        - Data
+                            - Minio (S3)
+                            - PVCs (encryption from K8s secrets)
+                        - Network policy
+                            - Cilium
+                        - Reverse proxy and TLS
+                            - Nginx
+                            - Cert manager
+                        - VPN
+                            - Wireguard
+                        - Secrets
+                            - etcd (?)
+                    </aside>
+                </section>
+                <!-- Progress on Dawn -->
+                <!-- Conclusions, take home messages -->
+                <section>
+                    <h3>Lessons</h3>
+                    <aside data-markdown class="notes">
+                        - Governance is difficult with multiple parties, don't solve it unless you have to
+                        - K8s is becoming a standard base for private-cloud-HPC, and TRE builders (K8TRE, UCL, Lancaster)
+                    </aside>
+                </section>
+                <!-- Project future and next steps -->
+                <!-- Acknowledgements -->
+                <section>
+                    <h2>Acknowledgements</h2>
+                    <section>
+                        <figure>
+                            <img src="static/BannerThanks.jpg" width="80%">
+                            <figcaption>Banner Thanks by Scriberia. Used under CC-BY 4.0 <a href="https://doi.org/10.5281/zenodo.8169292">10.5281/zenodo.8169292</a></figcaption>
+                        </figure>
+                    </section>
+                    <section>
+                        <p>Development Team</p>
+                    </section>
+                    <section>
+                        <p>DARE UK</p>
+                    </section>
+                    <section>
+                        <p><a href="https://www.scriberia.com/">Scriberia</a> and <a href="https://book.the-turing-way.org"><i>The Turing Way</i></a>, who we work with to make the excellent, openly licensed, illustrations</p>
+                    </section>
+                </section>
+                <!-- Call to action -->
+                <section>
+                    <h4>Use our projects</h4>
+                    <h4>Contribute</h4>
+                    <h4>Get involved</h4>
+                    <i class="fa-solid fa-people-group"></i><a href="https://uktre.org"> <code>uktre.org</code></a></br>
+                    <i class="fa-solid fa-circle-check"></i><a href="https://satre-specification.readthedocs.io"> <code>satre-specification.readthedocs.io</code></a>
+                    <aside data-markdown class="notes">
+                    </aside>
+                </section>
+            </div>
+        </div>
+
+        <script src="reveal.js/dist/reveal.js"></script>
+        <script src="reveal.js/plugin/notes/notes.js"></script>
+        <script src="reveal.js/plugin/markdown/markdown.js"></script>
+        <script src="reveal.js/plugin/highlight/highlight.js"></script>
+        <script>
+            // More info about initialization & config:
+            // - https://revealjs.com/initialization/
+            // - https://revealjs.com/config/
+            Reveal.initialize({
+                hash: true,
+                backgroundTransition: "fade",
+
+                // Learn about plugins: https://revealjs.com/plugins/
+                plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+            });
+        </script>
+    </body>
+</html>
