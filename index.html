@@ -24,9 +24,9 @@
             figcaption {
                 font-size: medium;
             }
-            .reveal table td {
+            .reveal table td, .reveal table th {
                 text-align: center;
-                width: 220px;
+                width: 250px;
             }
             .fragment.blur {
                 filter: blur(8px);
@@ -40,6 +40,14 @@
             }
             .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
                 text-transform: capitalize;
+            }
+            div.columns{
+                display: flex;
+                gap: min(4vw, 1.5em);
+            }
+            div.column{
+                flex: auto;
+                overflow-x: auto;
             }
         </style>
     </head>
@@ -60,7 +68,7 @@
                     <h3>Why sensitive data?</h3>
                     <figure>
                         <img src="static/DataEcosystem.jpg" width="80%">
-                        <figcaption>Data Ecosystem by Scriberia. Used under CC-BY 4.0 <a href="https://doi.org/10.5281/zenodo.8169292">10.5281/zenodo.8169292</a></figcaption>
+                        <figcaption>Data Ecosystem by Scriberia. Used under CC-BY 4.0 <a href="https://doi.org/10.5281/zenodo.13882307">10.5281/zenodo.13882307</a></figcaption>
                     </figure>
                     <aside data-markdown class="notes">
                         - Research uses data
@@ -77,7 +85,7 @@
                     <h3>Why trusted research environments?</h3>
                     <figure>
                         <img src="static/sensitive-data.jpg" width="65%">
-                        <figcaption>Sensitive Data by Scriberia. Used under CC-BY 4.0 <a href="https://doi.org/10.5281/zenodo.8169292">10.5281/zenodo.8169292</a></figcaption>
+                        <figcaption>Sensitive Data by Scriberia. Used under CC-BY 4.0 <a href="https://doi.org/10.5281/zenodo.13882307">10.5281/zenodo.13882307</a></figcaption>
                     </figure>
                     <aside data-markdown class="notes">
                         - Justified privacy and security concerns
@@ -92,6 +100,9 @@
                 </section>
                 <section>
                     <h3>Why HPC?</h3>
+                    <figure>
+                        <img src="static/machine-learning-reusable-pipeline-modified.jpg" width="65%">
+                        <figcaption>Machine Learning Reusable Pipelineby Scriberia, modified. Used under CC-BY 4.0 <a href="https://doi.org/10.5281/zenodo.13882307">10.5281/zenodo.13882307</a></figcaption>
                     <aside data-markdown class="notes">
                         - Parallel processing
                         - Very fast interconnects
@@ -108,21 +119,181 @@
                 <section>
                     <section>
                         <h3>TREs are not HPC</h3>
+                        <ul>
+                            <li><b>Top priority</b> is security</li>
+                            <li><b>Don't</b> typically use HPC hardware</li>
+                            <li>Scaling on cloud is <b>expensive</b></li>
+                            <li>Often designed for a single <b>domain</b></li>
+                            <li>Restrictive</li>
+                        </ul>
                     </section>
+                        <aside data-markdown class="notes">
+                            - Focus on security controls above all else
+                            - Often build on cloud systems
+                                - Great ability for "X" as code (policy, infra, networking)
+                                - Performance hit through virtualisation
+                            - Cloud costs for HPC/GPU nodes are high, and availability may be low
+                            - Can be inflexible, designed for a small group of users or domain with only the tools they need
+                        </aside>
                     <section>
                         <h3>HPC is not a TRE</h3>
+                        <ul>
+                            <li>Designed for power/throughput, not confidentiality</li>
+                            <li><b>Shared</b> systems
+                                <ul>
+                                    <li><b>Many</b> users and projects</li>
+                                    <li>Jobs <b>share</b> resources/nodes</li>
+                                </ul>
+                            <li>Public</li>
+                            <li>No/little controls on data ingress and egress</li>
+                        </ul>
+                        <aside data-markdown class="notes">
+                            - Shared systems, inherently.
+                              Need to make the most out of investment by keeping throughput high
+                            - Many users, not all of whom will have training or responsibility for sensitive data
+                            - Jobs may share nodes, possibility for attacks (without TEE)
+                            - Accessed over the internet
+                            - Designed to be easy to get data in and out (code and results!)
+                        </aside>
                     </section>
                 </section>
                 <!-- What is FRIDGE? Introduction -->
                 <section>
                     <h3>FRIDGE</h3>
+                    <p>A <b>ready-to-use</b> <a href="https://satre-specification.readthedocs.io">SATRE</a> compliant TRE that can be deployed to <b>AIRR</b></p>
+                    <figure>
+                        <img src="static/fridge.png" width="60%">
+                    </figure>
+                    <aside data-markdown class="notes">
+                        - Quickly settled on K8s
+                        - Self-managed K8s is a first-class offering on Dawn and Isambard-AI
+                        - Private cloud model
+                    </aside>
+                </section>
+                <section>
+                    <h3>Design options</h3>
+                    <section>
+                        <h4>Remote desktop TRE</h4>
+                        <table>
+                            <tr>
+                                <th>Pros</th>
+                                <th>Cons</th>
+                            </tr>
+                            <tr>
+                                <td>Familiar</td>
+                                <td>Inefficient</td>
+                            </tr>
+                            <tr>
+                                <td>Flexible</td>
+                                <td>Complicated</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>High support cost</td>
+                            </tr>
+                        </table>
+                        <aside data-markdown class="notes">
+                            - "Traditional TRE"
+                            - Graphical desktop (_e.g._ Guac)
+                            - Machine image pre-loaded with tools
+                            - kubevirt
+                        </aside>
+                    </section>
+                    <section>
+                        <h4>Notebooks</h4>
+                        <table>
+                            <tr>
+                                <th>Pros</th>
+                                <th>Cons</th>
+                            </tr>
+                            <tr>
+                                <td>Familiar</td>
+                                <td>Restrictive</td>
+                            </tr>
+                            <tr>
+                                <td>Optimised for analysis</td>
+                                <td>Trivial egress</td>
+                            </tr>
+                            <tr>
+                                <td>Encourages reproducibility</td>
+                                <td></td>
+                            </tr>
+                        </table>
+                        <aside data-markdown class="notes">
+                            - _E.g._ Jupyter
+                            - Difficult (impossible?) to prevent trivial egress through copy-paste
+                            - Can be workable with
+                                - Secure user devices
+                                - High levels of training
+                        </aside>
+                    </section>
+                    <section>
+                        <h4>Job dispatch</h4>
+                        <table>
+                            <tr>
+                                <th>Pros</th>
+                                <th>Cons</th>
+                            </tr>
+                            <tr>
+                                <td>Efficient</td>
+                                <td>Unfamiliar</td>
+                            </tr>
+                            <tr>
+                                <td>Flexible</td>
+                                <td>Learning curve</td>
+                            </tr>
+                            <tr>
+                                <td>Can use K8s native tools</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Empowers users</td>
+                                <td></td>
+                            </tr>
+                        </table>
+                        <aside data-markdown class="notes">
+                            - More abstract interface
+                            - Users submit workflow definition
+                            - Efficient
+                                - Low idle resources
+                                - Could queue jobs
+                            - Workflow schedulers and cluster managers are common in K8s
+                            - Users take control of the software and jobs they want to run
+                                - Less need for admin intervention
+                        </aside>
+                    </section>
                 </section>
                 <!-- What is FRIDGE? Governance and shared responsibility -->
                 <section>
                     <h3>Shared responsibility</h3>
-                </section>
-                <!-- What is FRIDGE? User/data workflow (high level tech) -->
-                    <!-- Backreference to governance, how the design supports governance -->
+                    <section>
+                        <p>Need agreement between TRE operator and infrastructure provider</p>
+                        <p>How do we assure the host, that they are not accountable?</p>
+                        <p class="fragment custom blur"><b>Extend</b> the governance of a TRE to cover a <b>secure enclave</b> on AIRR (or another system)</p>
+                        <p class="fragment custom blur">Strict isolation of a <b>TRE tenancy</b> on the host gives the confidence to to delegate information governance to the operator</p>
+                    </section>
+                    <section>
+                        <table width=100%>
+                            <tr>
+                                <th>TRE operator</th>
+                                <th>Infrastructure provider</th>
+                            </tr>
+                            <tr>
+                                <td>Data processing</td>
+                                <td rowspan="2">Securing TRE tenancy</td>
+                            </tr>
+                            <tr>
+                                <td>User access and management</td>
+                            </tr>
+                            <tr>
+                                <td>Data ingress and merging</td>
+                                <td rowspan="3">Providing K8s with GPU passthrough and S2S VPN</td>
+                            </tr>
+                            <tr>
+                                <td>Release of results</td>
+                            </tr>
+                        </table>
+                    </section>
                     <aside data-markdown class="notes">
                         - **Challenge**: How to make HPC provider comfortable with high-risk data
                         - **Key point**: Extend TRE governance to an enclave on the HPC system
@@ -134,34 +305,14 @@
                             - provide a secure space to build a TRE
                             - **not** handle, process or transfer sensitive data
                     </aside>
-                <section>
-                    <h3>Design options</h3>
-                    <section>
-                        <h4>Remote desktop TRE</h4>
-                        <aside data-markdown class="notes">
-                            - kubevirt
-                        </aside>
-                    </section>
-                    <section>
-                        <h4>Notebooks</h4>
-                        <aside data-markdown class="notes">
-                            - _E.g._ Jupyter
-                            - Difficult (impossible?) to prevent trivial egress through copy-paste
-                            - Can be workable with
-                                - Secure user devices
-                                - High levels of training
-                        </aside>
-                    </section>
-                    <section>
-                        <h4>Job dispatch</h4>
-                        <aside data-markdown class="notes">
-                            - More abstract interface
-                            - Users submit workflow definition
-                        </aside>
-                    </section>
                 </section>
+                <!-- What is FRIDGE? User/data workflow (high level tech) -->
+                    <!-- Backreference to governance, how the design supports governance -->
                 <section>
                     <h3>FRIDGE architecture</h3>
+                    <figure>
+                        <img src="static/tenancy_span.svg" width="100%">
+                    </figure>
                     <aside data-markdown class="notes">
                         - TRE tenant, secured/configured by HPC provider (link back)
                             - Connection to external trusted resource (S2S VPN)
@@ -184,6 +335,9 @@
                 <!-- What is FRIDGE? Implementation (Argo, Harbor, etc.) -->
                 <section>
                     <h3>FRIDGE implementation</h3>
+                    <figure>
+                        <img src="static/FRIDGE_arch_summary.svg" width="100%">
+                    </figure>
                     <aside data-markdown class="notes">
                         - Jobs
                             - Argo Workflows
@@ -203,30 +357,116 @@
                             - etcd (?)
                     </aside>
                 </section>
-                <!-- Progress on Dawn -->
+                <section>
+                    <h3>Security</h3>
+                    <div class="columns">
+                        <div class="column" style="width: 50%">
+                            <p>Inside K8s</p>
+                            <ul>
+                                <li>RBAC</li>
+                                <li>PSS</li>
+                                <li>Network policy</li>
+                            </ul>
+                        </div>
+                        <div class="column" style="width: 50%">
+                            <p>Outside K8s</p>
+                            <ul>
+                                <li>Site-to-site VPN</li>
+                                <li>TRE tenancy isolation</li>
+                                <ul>
+                                    <li>Virtual machines and network</li>
+                                    <li>Encryption through out-of-band secrets</li>
+                                </ul>
+                            </ul>
+                        </div>
+                    </div>
+                    <aside data-markdown class="notes">
+                        - Three prongs inside K8s
+                            - RBAC, pods which users run have a service account which prevents them from modifying K8s/interacting with the kubeAPI
+                            - PSS, pods have no privileges on the host (_e.g._ root, networking) except to use GPUs
+                            - Network Policy, traffic within the cluster is heavily restricted, only what is necessary
+                        - Securing the boundary
+                            - Running with TRE Tenant, VM, if VM is compromised the physical host is not and vnet restrictions still apply
+                            - Data is encrypted at rest, with keys only visible to the FRIDGE manager
+                        - Which means,
+                            - Users have very little privilege
+                            - They cannot access the host or modify the K8s spec
+                            - If they do somehow manage to compromise the VM, physical host is still protected, tenants are still isolated
+                            - If the host system is compromised, the data is encrypted with keys not available to root(?)
+                    </aside>
+                </section>
+                <!-- Progress -->
+                <section>
+                    <h3>Progress</h3>
+                    <section>
+                        <h4>Project</h4>
+                        <ul>
+                            <li class="fragment custom blur">Shared responsibility model ✅</li>
+                            <li class="fragment custom blur">TRE tenancy 🚧</li>
+                            <li class="fragment custom blur">MVP implementation on Azure ✅</li>
+                            <li class="fragment custom blur">Job submission API 🚧</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>on Dawn</h4>
+                        <ul>
+                            <li class="fragment custom blur">On-demand K8s cluster ✅</li>
+                            <li class="fragment custom blur">GPU passthrough ✅</li>
+                            <li class="fragment custom blur">Fridge development deployment ✅</li>
+                            <li class="fragment custom blur">S2S VPN </li>
+                            <li class="fragment custom blur">PVC encryption 🚧</li>
+                        </ul>
+                    </section>
+                </section>
                 <!-- Conclusions, take home messages -->
                 <section>
                     <h3>Lessons</h3>
+                    <ul>
+                        <li>Multi-party governance is <b>difficult</b></li>
+                        <li>K8s is becoming <b>standard</b></li>
+                        <li><b>Self-service HPC</b> has arrived</li>
+                        <li>Not all K8s implementations are the same</li>
+                        <li>Don't reinvent the wheel</li>
+                    </ul>
                     <aside data-markdown class="notes">
                         - Governance is difficult with multiple parties, don't solve it unless you have to
                         - K8s is becoming a standard base for private-cloud-HPC, and TRE builders (K8TRE, UCL, Lancaster)
+                        - K8s implementations vary
+                        - Don't reinvent the wheel
+                            - We have built on a lot of mature FOSS projects
+                            - We would have little hope of making something functional and sustainable if we tried to build it from scracth
                     </aside>
                 </section>
                 <!-- Project future and next steps -->
+                <section>
+                    <h3>Future</h3>
+                    <aside data-markdown class="notes">
+                        - Finish and validate Dawn deployment
+                        - Real workflow on Dawn
+                        - Multi-node
+                        - Confidential Computing
+                    </aside>
+                </section>
                 <!-- Acknowledgements -->
                 <section>
                     <h2>Acknowledgements</h2>
                     <section>
                         <figure>
                             <img src="static/BannerThanks.jpg" width="80%">
-                            <figcaption>Banner Thanks by Scriberia. Used under CC-BY 4.0 <a href="https://doi.org/10.5281/zenodo.8169292">10.5281/zenodo.8169292</a></figcaption>
+                            <figcaption>Banner Thanks by Scriberia. Used under CC-BY 4.0 <a href="https://doi.org/10.5281/zenodo.13882307">10.5281/zenodo.13882307</a></figcaption>
                         </figure>
                     </section>
                     <section>
                         <p>Development Team</p>
+                        <img src="static/turing.png" height="110">
+                        <img src="static/bristol.png" height="110">
+                        </br>
+                        <img src="static/cambridge.png" height="110">
+                        <img src="static/ucl.png" height="110">
                     </section>
                     <section>
                         <p>DARE UK</p>
+                        <p>Funding this work through the <a href="https://dareuk.org.uk/how-we-work/ongoing-activities/dare-uk-early-adopters/">DARE UK Early Adopters</a> programme
                     </section>
                     <section>
                         <p><a href="https://www.scriberia.com/">Scriberia</a> and <a href="https://book.the-turing-way.org"><i>The Turing Way</i></a>, who we work with to make the excellent, openly licensed, illustrations</p>
@@ -234,11 +474,14 @@
                 </section>
                 <!-- Call to action -->
                 <section>
-                    <h4>Use our projects</h4>
-                    <h4>Contribute</h4>
-                    <h4>Get involved</h4>
-                    <i class="fa-solid fa-people-group"></i><a href="https://uktre.org"> <code>uktre.org</code></a></br>
-                    <i class="fa-solid fa-circle-check"></i><a href="https://satre-specification.readthedocs.io"> <code>satre-specification.readthedocs.io</code></a>
+                    <h3>Try it out and contribute</h3>
+                    <i class="fa-brands fa-github"></i> <a href="https://github.com/alan-turing-institute/fridge"><code>alan-turing-institute/fridge</code></a>
+                    <h3>Explore other DARE UK activities</h3>
+                    <i class="fa-solid fa-forward"></i> <a href="https://dareuk.org.uk/how-we-work/ongoing-activities/dare-uk-early-adopters/">Early Adopters</a></br>
+                    <i class="fa-solid fa-dna"></i> <a href="https://dareuk.org.uk/how-we-work/ongoing-activities/trevolution/">TREvolution</a>
+                    <h3>Get involved</h3>
+                    <i class="fa-solid fa-people-group"></i> <a href="https://uktre.org"><code>uktre.org</code></a></br>
+                    <i class="fa-solid fa-circle-check"></i> <a href="https://satre-specification.readthedocs.io"><code>satre-specification.readthedocs.io</code></a>
                     <aside data-markdown class="notes">
                     </aside>
                 </section>
