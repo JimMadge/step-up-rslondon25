@@ -89,7 +89,7 @@
                     </figure>
                     <aside data-markdown class="notes">
                         - Justified privacy and security concerns
-                        - TREs are a solution to that conflict
+                        - TREs have become the most important solution to that conflict
                             - Secure environments with controls to prevent unauthorised data egress
                             - Make more sensitive data available for research
                         - Compared to sending data to researchers
@@ -105,10 +105,11 @@
                         <figcaption>Machine Learning Reusable Pipelineby Scriberia, modified. Used under CC-BY 4.0 <a href="https://doi.org/10.5281/zenodo.13882307">10.5281/zenodo.13882307</a></figcaption>
                     </figure>
                     <aside data-markdown class="notes">
-                        - Parallel processing
-                        - Very fast interconnects
-                        - Large, parallel filesystems
-                        - Large, fast storage
+                        - very time-efficient (FLOPS)
+                            - Parallel processing
+                            - Very fast interconnects
+                            - parallel filesystems
+                            - fast storage
                         - AI in particular
                             - Large numbers of GPUs
                             - RDMA
@@ -134,13 +135,13 @@
                                 - Great ability for "X" as code (policy, infra, networking)
                                 - Performance hit through virtualisation
                             - Cloud costs for HPC/GPU nodes are high, and availability may be low
-                            - Scaling on prem can be expensive
+                            - Scaling on prem can be expensive, capital cost for hardware, space, power
                             - Can be inflexible, designed for a small group of users or domain with only the tools they need
                         </aside>
                     <section>
                         <h3>HPC is not a TRE</h3>
                         <ul>
-                            <li>Designed for <b>performance/throughput</b></li>
+                            <li>Designed for <b>performance or throughput</b></li>
                             <li><b>Shared</b> systems
                                 <!--
                                 <ul>
@@ -274,46 +275,50 @@
                     <h3>Shared responsibility</h3>
                     <section>
                         <p>Need <b>agreement</b> between TRE operator and infrastructure provider</p>
-                        <p>How do we assure the host, that they are not accountable?</p>
-                        <p class="fragment custom blur"><b>Extend</b> the governance of a TRE to cover a <b>secure enclave</b> on AIRR (or another system)</p>
-                        <p class="fragment custom blur">Strict isolation of a <b>TRE tenancy</b> on the host gives the confidence to <b>delegate information governance</b> to the operator</p>
+                        <!-- <p>How do we assure the host, that they are not accountable?</p> -->
+                        <p class="fragment custom blur"><b>Extend</b> TRE governance to a <b>secure enclave</b> on HPC (the <b>TRE tenancy</b>)</p>
+                        <!-- <p class="fragment custom blur">Strict isolation of a <b>TRE tenancy</b> on the host gives the confidence to <b>delegate information governance</b> to the operator</p> -->
+                        <p class="fragment custom blur"><b>Delegate information governance</b> to the TRE operator</p>
+                        <aside data-markdown class="notes">
+                            - **Challenge**: How to make HPC provider comfortable with high-risk data being used on their system
+                            - **Key point**: Extend TRE governance to an enclave on the HPC system
+                            - Keep the responsibility and governance with the TRE operator
+                            - Protect the HPC provider from data protection questions
+                            - Avoids the need for complex data sharing agreements
+                        </aside>
                     </section>
                     <section>
-                    <div class="columns">
-                        <div class="column" style="width: 50%">
-                            <h4>TRE operator 🧑‍⚖️</h4>
-                            <ul>
-                                <li>Data processing</li>
-                                <li>User management</li>
-                                <li>Data ingress and merging</li>
-                                <li>Release of results</li>
-                            </ul>
+                        <div class="columns">
+                            <div class="column" style="width: 50%">
+                                <h4>TRE operator 🧑‍⚖️</h4>
+                                <ul>
+                                    <li>Data processing</li>
+                                    <li>User management</li>
+                                    <li>Data ingress and merging</li>
+                                    <li>Release of results</li>
+                                </ul>
+                            </div>
+                            <div class="column" style="width: 50%">
+                                <h4>Infrastructure provider 🧑‍🔧</h4>
+                                <ul>
+                                    <li>Securing TRE tenancy</li>
+                                    <li>Providing K8s with
+                                        <ul>
+                                            <li>GPU passthrough</li>
+                                            <li>Compatible CNI</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="column" style="width: 50%">
-                            <h4>Infrastructure provider 🧑‍🔧</h4>
-                            <ul>
-                                <li>Securing TRE tenancy</li>
-                                <li>Providing K8s with
-                                    <ul>
-                                        <li>GPU passthrough</li>
-                                        <li>Compatible CNI</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                        <aside data-markdown class="notes">
+                            - TRE operator runs the TRE as if it is their infrastructure
+                            - HPC providers responsbility is
+                                - provide a secure space to build a TRE
+                                - **not** handle, process or transfer sensitive data
+                            - **Link**: This informs the design, what does it look like?
+                        </aside>
                     </section>
-                    <aside data-markdown class="notes">
-                        - **Challenge**: How to make HPC provider comfortable with high-risk data
-                        - **Key point**: Extend TRE governance to an enclave on the HPC system
-                        - Keep the responsibility and governance with the TRE operator
-                        - Protect the HPC provider from data protection questions
-                        - Avoids the need for complex data sharing agreements
-                        - **Link**: This informs the design!
-                        - HPC providers responsbility is
-                            - provide a secure space to build a TRE
-                            - **not** handle, process or transfer sensitive data
-                    </aside>
                 </section>
                 <!-- What is FRIDGE? User/data workflow (high level tech) -->
                     <!-- Backreference to governance, how the design supports governance -->
@@ -339,6 +344,7 @@
                             - "I want a desktop"
                             - Probably slow for iterative, exploratory work
                             - Learning curve for packaging code in containers, workflow format
+                        - **Link**: How is it implemented?
                     </aside>
                 </section>
                 <!-- What is FRIDGE? Implementation (Argo, Harbor, etc.) -->
@@ -375,6 +381,7 @@
                                 <li>RBAC</li>
                                 <li>Pod security standards</li>
                                 <li>Network policy</li>
+                                <li>Automatic encryption of volumes</li>
                             </ul>
                         </div>
                         <div class="column" style="width: 50%">
@@ -441,10 +448,10 @@
                     <aside data-markdown class="notes">
                         - Governance is difficult with multiple parties, don't solve it unless you have to
                         - K8s is becoming a standard base for private-cloud-HPC, and TRE builders (K8TRE, UCL, Lancaster)
-                        - K8s implementations vary
+                        - You cannot expect to build one giant helm chart which works everywhere
                         - Don't reinvent the wheel
                             - We have built on a lot of mature FOSS projects
-                            - We would have little hope of making something functional and sustainable if we tried to build it from scracth
+                            - We would have little hope of making something functional and sustainable if we tried to build it from scratch
                     </aside>
                 </section>
                 <!-- Project future and next steps -->
