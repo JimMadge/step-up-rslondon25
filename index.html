@@ -276,26 +276,29 @@
                         <p class="fragment custom blur">Strict isolation of a <b>TRE tenancy</b> on the host gives the confidence to <b>delegate information governance</b> to the operator</p>
                     </section>
                     <section>
-                        <table width=100%>
-                            <tr>
-                                <th>TRE operator</th>
-                                <th>Infrastructure provider</th>
-                            </tr>
-                            <tr>
-                                <td>Data processing</td>
-                                <td rowspan="2">Securing TRE tenancy</td>
-                            </tr>
-                            <tr>
-                                <td>User access and management</td>
-                            </tr>
-                            <tr>
-                                <td>Data ingress and merging</td>
-                                <td rowspan="3">Providing K8s with GPU passthrough</td>
-                            </tr>
-                            <tr>
-                                <td>Release of results</td>
-                            </tr>
-                        </table>
+                    <div class="columns">
+                        <div class="column" style="width: 50%">
+                            <h4>TRE operator 🧑‍⚖️</h4>
+                            <ul>
+                                <li>Data processing</li>
+                                <li>User management</li>
+                                <li>Data ingress and merging</li>
+                                <li>Release of results</li>
+                            </ul>
+                        </div>
+                        <div class="column" style="width: 50%">
+                            <h4>Infrastructure provider 🧑‍🔧</h4>
+                            <ul>
+                                <li>Securing TRE tenancy</li>
+                                <li>Providing K8s with
+                                    <ul>
+                                        <li>GPU passthrough</li>
+                                        <li>Compatible CNI</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                     </section>
                     <aside data-markdown class="notes">
                         - **Challenge**: How to make HPC provider comfortable with high-risk data
