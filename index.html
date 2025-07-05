@@ -382,28 +382,27 @@
                             <ul>
                                 <li>Site-to-site VPN</li>
                                 <li>TRE tenancy isolation</li>
-                                <li>
                                     <ul>
                                         <li>Virtual machines and network</li>
-                                        <li>Encryption through out-of-band secrets</li>
+                                        <li>Encryption at rest support using customer keys</li>
                                     </ul>
-                                </li>
                             </ul>
                         </div>
                     </div>
                     <aside data-markdown class="notes">
-                        - Three prongs inside K8s
+                        - Inside K8s
                             - RBAC, pods which users run have a service account which prevents them from modifying K8s/interacting with the kubeAPI
                             - PSS, pods have no privileges on the host (_e.g._ root, networking) except to use GPUs
                             - Network Policy, traffic within the cluster is heavily restricted, only what is necessary
+                            - K8s volumes are automatically encrypted when provisioned
                         - Securing the boundary
                             - Running with TRE Tenant, VM, if VM is compromised the physical host is not and vnet restrictions still apply
-                            - Data is encrypted at rest, with keys only visible to the FRIDGE manager
+                            - Data is encrypted at rest, with keys only visible to the FRIDGE operator
                         - Which means,
                             - Users have very little privilege
                             - They cannot access the host or modify the K8s spec
                             - If they do somehow manage to compromise the VM, physical host is still protected, tenants are still isolated
-                            - If the host system is compromised, the data is encrypted with keys not available to root(?)
+                            - If the host system is compromised, the data is encrypted with keys not available
                     </aside>
                 </section>
                 <!-- Progress -->
