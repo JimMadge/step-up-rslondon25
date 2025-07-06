@@ -94,11 +94,8 @@
                     <aside data-markdown class="notes">
                         - Justified privacy and security concerns
                         - TREs have become the most important solution to that conflict
-                            - Secure environments with technical and policy controls to prevent unauthorised data egress
-                            - Make more sensitive data available for research
-                        - Compared to sending data to researchers
-                            - Prevents unauthorised disclosure
-                            - Trust is more distributed (enables 5 safes)
+                            - Secure environments with technical and policy controls to prevent unauthorised data egress, accidental or malicious
+                            - Their use has made more sensitive data available for research
                         - **LINK:** Some work requires lots of computational power
                     </aside>
                 </section>
@@ -109,12 +106,12 @@
                         <figcaption>Machine Learning Reusable Pipelineby Scriberia, modified. Used under CC-BY 4.0 <a href="https://doi.org/10.5281/zenodo.13882307">10.5281/zenodo.13882307</a></figcaption>
                     </figure>
                     <aside data-markdown class="notes">
-                        - very time-efficient (FLOPS) as a result of special hardware and architecture
+                        - HPC systems very time-efficient (FLOPS) as a result of special hardware and architecture
                             - Many nodes for parallel processing
                             - Extremely fast interconnects
                             - fast storage
                         - AI in particular
-                            - Large numbers of GPUs
+                            - (Accelerators) GPUs in *large numbers*
                             - Datacentre GPUs have features consumer GPUs don't
                                 - RDMA
                                 - Fast GPU-GPU interconnects
@@ -159,7 +156,7 @@
                             <li>Few controls for <b>data ingress and egress</b></li>
                         </ul>
                         <aside data-markdown class="notes">
-                            - Equally, **TREs are not HPC**
+                            - Equally, **HPC is not a TRE**
                             - Goal is to maintain high performance *and utilisation* over the system's lifetime
                             - Inherently shared
                                 - Many users, not all of whom will have training or responsibility for sensitive data
@@ -292,7 +289,7 @@
                         <p class="fragment custom blur"><b>Delegate information governance</b> to the TRE operator</p>
                         <aside data-markdown class="notes">
                             - **Challenge**: How to make HPC provider comfortable with high-risk data being used on their system
-                            - **Key point**: Extend TRE governance to an enclave on the HPC system
+                            - **Key point**: Extend governance on an existing TRE to an enclave on the HPC system
                             - Keep the responsibility and governance with the TRE operator
                             - Protect the HPC provider from data protection responsibility
                             - Avoids the need for complex data sharing agreements
@@ -344,19 +341,19 @@
                         <img src="static/tenancy_span.svg" width="100%">
                     </figure>
                     <aside data-markdown class="notes">
-                        - TRE tenant, secured/configured by HPC provider
-                        - Connection to external TRE by VPN
+                        - TRE tenant, secured/configured by HPC provider, which FRIDGE is deployed in to
+                        - Connected to external TRE by VPN
                         - Users in TRE submit jobs or request outputs
                         - Advantages
                             - Considered part of existing TRE, under it's governance
                             - Outputs do not need to be classified, they go to a TRE
-                            - Minimal services running on HPC
+                            - Small footprint on HPC
                             - Promote reproducibility with workflows
                         - Disadvantages
                             - "I want a notebook"
                             - "I want a desktop"
                             - Probably slow for iterative, exploratory work
-                        - **LINK**: How is it implemented?
+                        - **LINK**: In more detail, our implementation
                     </aside>
                 </section>
                 <!-- What is FRIDGE? Implementation (Argo, Harbor, etc.) -->
@@ -398,13 +395,14 @@
                     </div>
                     <aside data-markdown class="notes">
                         - Inside K8s
-                            - Pods which users run have a service account which prevents them from modifying K8s/interacting with the kubeAPI (RBAC)
+                            - Users jobs have a service account which prevents them from interacting with the kubeAPI (RBAC)
                             - PSS ensures pods have no privileges on the host, _e.g._ root, networking, except to use GPUs
-                            - Network Policy, traffic within the cluster is heavily restricted to only what is necessary
+                            - Traffic within the cluster is heavily restricted by network policy, to only what is necessary
                             - K8s volumes are automatically encrypted when provisioned
                         - Securing the boundary
                             - Site-to-site VPN means no endpoints are exposed publicly
-                            - Running with TRE Tenant, VM, if VM is compromised the physical host is not and vnet restrictions still apply
+                            - Hypervisor isolation of K8s host
+                            - The physical host is not not compromised if the VM is
                         - All of this means,
                             - Users have very little privilege
                             - They cannot access the host or modify the K8s spec
@@ -419,20 +417,20 @@
                     <section>
                         <h4>Project</h4>
                         <ul>
-                            <li class="fragment custom blur">Shared responsibility model ✅</li>
-                            <li class="fragment custom blur">TRE tenancy ✅</li>
-                            <li class="fragment custom blur">MVP implementation on Azure ✅</li>
-                            <li class="fragment custom blur">Job submission API 🚧</li>
+                            <li class="fragment custom blur" data-fragment-index="1">Shared responsibility model ✅</li>
+                            <li class="fragment custom blur" data-fragment-index="1">TRE tenancy ✅</li>
+                            <li class="fragment custom blur" data-fragment-index="1">MVP implementation on Azure ✅</li>
+                            <li class="fragment custom blur" data-fragment-index="2">Job submission API 🚧</li>
                         </ul>
                     </section>
                     <section>
                         <h4>on Dawn</h4>
                         <ul>
-                            <li class="fragment custom blur">On-demand K8s cluster ✅</li>
-                            <li class="fragment custom blur">GPU passthrough ✅</li>
-                            <li class="fragment custom blur">Fridge development deployment ✅</li>
-                            <li class="fragment custom blur">S2S VPN 🚧</li>
-                            <li class="fragment custom blur">PVC encryption 🚧</li>
+                            <li class="fragment custom blur" data-fragment-index="1">On-demand K8s cluster ✅</li>
+                            <li class="fragment custom blur" data-fragment-index="1">GPU passthrough ✅</li>
+                            <li class="fragment custom blur" data-fragment-index="1">Fridge development deployment ✅</li>
+                            <li class="fragment custom blur" data-fragment-index="2">S2S VPN 🚧</li>
+                            <li class="fragment custom blur" data-fragment-index="2">PVC encryption 🚧</li>
                         </ul>
                     </section>
                 </section>
@@ -447,7 +445,7 @@
                         <li><b>Don't</b> reinvent the wheel</li>
                     </ul>
                     <aside data-markdown class="notes">
-                        - Governance is difficult with multiple parties, don't solve it unless you have to
+                        - Governance is difficult with multiple parties, we have worked to find ways to avoid it
                         - Private-cloud-HPC is becoming an important part of the UK HPC landscape, with K8s a key offering
                         - K8s implementations differ, you cannot expect to build one giant helm chart which works everywhere
                         - Not an original observation, don't reinvent the wheel
@@ -506,7 +504,8 @@
                         <p>Funding this work through the <a href="https://dareuk.org.uk/how-we-work/ongoing-activities/dare-uk-early-adopters/">DARE UK Early Adopters</a> programme
                     </section>
                     <section>
-                        <p><a href="https://www.scriberia.com/">Scriberia</a> and <a href="https://book.the-turing-way.org"><i>The Turing Way</i></a>, who we work with to make the excellent, openly licensed, illustrations</p>
+                        <p><a href="https://www.scriberia.com/">Scriberia</a> and <a href="https://book.the-turing-way.org"><i>The Turing Way</i></a></p>
+                        <p>Who we work with to make the excellent, openly licensed, illustrations</p>
                     </section>
                 </section>
                 <!-- Call to action -->
