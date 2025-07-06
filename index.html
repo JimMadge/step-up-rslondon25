@@ -60,7 +60,10 @@
                     <p>Jim Madge</p>
                     <p>Alan Turing Institute</p>
                     <aside data-markdown class="notes">
-                        - …
+                        - **Header:** Can we build useful/revolutionary AI models on sensitive data sets in a safe, secure way
+                        - Jim
+                        - Research Software Engineer at the Turing
+                        - Working on trusted research since 2020
                     </aside>
                 </section>
                 <!-- Pitch -->
@@ -74,9 +77,10 @@
                         - Research uses data
                         - Research can produce results that benefit society
                         - Some data useful for research is sensitive including
-                            - Medical data
+                            - Prominently medical data, but also
                             - Administrative data
                             - Financial data
+                            - Commercially sensitive data
                         - If we don't use it, we loose the benefits
                         - **LINK:** But using sensitive data can be difficult
                     </aside>
@@ -90,7 +94,7 @@
                     <aside data-markdown class="notes">
                         - Justified privacy and security concerns
                         - TREs have become the most important solution to that conflict
-                            - Secure environments with controls to prevent unauthorised data egress
+                            - Secure environments with technical and policy controls to prevent unauthorised data egress
                             - Make more sensitive data available for research
                         - Compared to sending data to researchers
                             - Prevents unauthorised disclosure
@@ -105,16 +109,16 @@
                         <figcaption>Machine Learning Reusable Pipelineby Scriberia, modified. Used under CC-BY 4.0 <a href="https://doi.org/10.5281/zenodo.13882307">10.5281/zenodo.13882307</a></figcaption>
                     </figure>
                     <aside data-markdown class="notes">
-                        - very time-efficient (FLOPS)
-                            - Parallel processing
-                            - Very fast interconnects
-                            - parallel filesystems
+                        - very time-efficient (FLOPS) as a result of special hardware and architecture
+                            - Many nodes for parallel processing
+                            - Extremely fast interconnects
                             - fast storage
                         - AI in particular
                             - Large numbers of GPUs
-                            - RDMA
-                            - Fast GPU-GPU interconnect
-                        - Expense is justified for a shared system (maintain high throughput)
+                            - Datacentre GPUs have features consumer GPUs don't
+                                - RDMA
+                                - Fast GPU-GPU interconnects
+                        - **LINK**: We have HPC, we have TREs, what is missing?
                     </aside>
                 </section>
                 <!-- The problem (or background) -->
@@ -125,19 +129,21 @@
                             <li>Security is <b>top priority</b></li>
                             <li><b>Lack HPC hardware</b></li>
                             <li>Scaling is <b>expensive</b></li>
-                            <li><b>Restrictive</b></li>
                             <li>Often designed for a single <b>domain</b></li>
                         </ul>
-                    </section>
                         <aside data-markdown class="notes">
-                            - Focus on security controls above all else
+                            - **TREs are not HPC**
+                            - Put security above all else
+                            - Generally lack HPC hardware
                             - Often build on cloud systems
                                 - Great ability for "X" as code (policy, infra, networking)
                                 - Performance hit through virtualisation
-                            - Cloud costs for HPC/GPU nodes are high, and availability may be low
-                            - Scaling on prem can be expensive, capital cost for hardware, space, power
+                            - Poor scaling
+                                - Cloud costs for HPC/GPU nodes are high, and availability may be low
+                                - Scaling on prem can be expensive, capital cost for hardware, space, power
                             - Can be inflexible, designed for a small group of users or domain with only the tools they need
                         </aside>
+                    </section>
                     <section>
                         <h3>HPC is not a TRE</h3>
                         <ul>
@@ -153,12 +159,14 @@
                             <li>Few controls for <b>data ingress and egress</b></li>
                         </ul>
                         <aside data-markdown class="notes">
-                            - Shared systems, inherently.
-                              Need to make the most out of investment by keeping throughput high
-                            - Many users, not all of whom will have training or responsibility for sensitive data
-                            - Jobs may share nodes, possibility for attacks (without TEE)
-                            - Accessed over the internet
-                            - Designed to be easy to get data in and out (code and results!)
+                            - Equally, **TREs are not HPC**
+                            - Goal is to maintain high performance *and utilisation* over the system's lifetime
+                            - Inherently shared
+                                - Many users, not all of whom will have training or responsibility for sensitive data
+                                - Jobs may share nodes, possibility for attacks (without TEE)
+                            - Accessed over the (public) internet
+                            - Designed to be easy to get data in and out (code and results)
+                            - **LINK**: What are we making to address this?
                         </aside>
                     </section>
                 </section>
@@ -170,9 +178,12 @@
                         <img src="static/fridge.png" width="60%">
                     </figure>
                     <aside data-markdown class="notes">
-                        - Quickly settled on K8s
+                        - I have been working on the **FRDIGE** project
+                        - A ready-to-use TRE that can be deployed to AIRR (or other HPC)
+                        - Built on K8s
                         - Self-managed K8s is a first-class offering on Dawn and Isambard-AI
-                        - Private cloud model
+                        - Both can operate as private clouds
+                        - **LINK**: To achieve this, the most important thing is ensuring we can have trust and agreement
                     </aside>
                 </section>
                 <!--
@@ -283,8 +294,9 @@
                             - **Challenge**: How to make HPC provider comfortable with high-risk data being used on their system
                             - **Key point**: Extend TRE governance to an enclave on the HPC system
                             - Keep the responsibility and governance with the TRE operator
-                            - Protect the HPC provider from data protection questions
+                            - Protect the HPC provider from data protection responsibility
                             - Avoids the need for complex data sharing agreements
+                            - **LINK**: What are the responsibilities of each party?
                         </aside>
                     </section>
                     <section>
@@ -292,8 +304,8 @@
                             <div class="column" style="width: 50%">
                                 <h4>TRE operator 🧑‍⚖️</h4>
                                 <ul>
-                                    <li>Data processing</li>
                                     <li>User management</li>
+                                    <li>Data processing</li>
                                     <li>Data ingress and merging</li>
                                     <li>Release of results</li>
                                 </ul>
@@ -302,7 +314,7 @@
                                 <h4>Infrastructure provider 🧑‍🔧</h4>
                                 <ul>
                                     <li>Securing TRE tenancy</li>
-                                    <li>Providing K8s with
+                                    <li>Providing FRIDGE-compatible K8s
                                         <ul>
                                             <li>GPU passthrough</li>
                                             <li>Compatible CNI</li>
@@ -313,10 +325,14 @@
                         </div>
                         <aside data-markdown class="notes">
                             - TRE operator runs the TRE as if it is their infrastructure
+                                - All governance
+                                - Controlling access
+                                - Work conducted
+                                - Flow of data in and out
                             - HPC providers responsbility is
                                 - provide a secure space to build a TRE
                                 - **not** handle, process or transfer sensitive data
-                            - **Link**: This informs the design, what does it look like?
+                            - **LINK**: How do we achieve this?
                         </aside>
                     </section>
                 </section>
@@ -328,23 +344,19 @@
                         <img src="static/tenancy_span.svg" width="100%">
                     </figure>
                     <aside data-markdown class="notes">
-                        - TRE tenant, secured/configured by HPC provider (link back)
-                            - Connection to external trusted resource (S2S VPN)
-                            - Sensitive data on HPC, close to compute
-                            - Job submission interface
-                            - "Buckets" for intermediates, results
+                        - TRE tenant, secured/configured by HPC provider
+                        - Connection to external TRE by VPN
+                        - Users in TRE submit jobs or request outputs
                         - Advantages
                             - Considered part of existing TRE, under it's governance
                             - Outputs do not need to be classified, they go to a TRE
                             - Minimal services running on HPC
                             - Promote reproducibility with workflows
-                            - Control of allowed container images
                         - Disadvantages
                             - "I want a notebook"
                             - "I want a desktop"
                             - Probably slow for iterative, exploratory work
-                            - Learning curve for packaging code in containers, workflow format
-                        - **Link**: How is it implemented?
+                        - **LINK**: How is it implemented?
                     </aside>
                 </section>
                 <!-- What is FRIDGE? Implementation (Argo, Harbor, etc.) -->
@@ -354,22 +366,14 @@
                         <img src="static/FRIDGE_arch_summary.svg" width="100%">
                     </figure>
                     <aside data-markdown class="notes">
-                        - Jobs
-                            - Argo Workflows
-                        - Containers
-                            - Harbor
-                        - Data
-                            - Minio (S3)
-                            - PVCs (encryption from K8s secrets)
-                        - Network policy
-                            - Cilium
-                        - Reverse proxy and TLS
-                            - Nginx
-                            - Cert manager
-                        - VPN
-                            - Wireguard
-                        - Secrets
-                            - etcd (?)
+                        - Wireguard VPN
+                        - REST APIs for user interaction
+                        - When a user submits a job
+                            - Submit a workflow specification
+                            - Argo Workflows launches pods
+                            - Harbor container repository
+                            - Data from Minio (S3) or block backed volumes
+                        - **LINK**: This is a system to manage jobs, how is it secured?
                     </aside>
                 </section>
                 <section>
@@ -389,27 +393,24 @@
                             <ul>
                                 <li>Site-to-site VPN</li>
                                 <li>TRE tenancy isolation</li>
-                                    <ul>
-                                        <li>Virtual machines and network</li>
-                                        <li>Encryption at rest support using customer keys</li>
-                                    </ul>
                             </ul>
                         </div>
                     </div>
                     <aside data-markdown class="notes">
                         - Inside K8s
-                            - RBAC, pods which users run have a service account which prevents them from modifying K8s/interacting with the kubeAPI
-                            - PSS, pods have no privileges on the host (_e.g._ root, networking) except to use GPUs
-                            - Network Policy, traffic within the cluster is heavily restricted, only what is necessary
+                            - Pods which users run have a service account which prevents them from modifying K8s/interacting with the kubeAPI (RBAC)
+                            - PSS ensures pods have no privileges on the host, _e.g._ root, networking, except to use GPUs
+                            - Network Policy, traffic within the cluster is heavily restricted to only what is necessary
                             - K8s volumes are automatically encrypted when provisioned
                         - Securing the boundary
+                            - Site-to-site VPN means no endpoints are exposed publicly
                             - Running with TRE Tenant, VM, if VM is compromised the physical host is not and vnet restrictions still apply
-                            - Data is encrypted at rest, with keys only visible to the FRIDGE operator
-                        - Which means,
+                        - All of this means,
                             - Users have very little privilege
                             - They cannot access the host or modify the K8s spec
                             - If they do somehow manage to compromise the VM, physical host is still protected, tenants are still isolated
                             - If the host system is compromised, the data is encrypted with keys not available
+                        - **LINK**: Where have we gotten to?
                     </aside>
                 </section>
                 <!-- Progress -->
@@ -419,7 +420,7 @@
                         <h4>Project</h4>
                         <ul>
                             <li class="fragment custom blur">Shared responsibility model ✅</li>
-                            <li class="fragment custom blur">TRE tenancy 🚧</li>
+                            <li class="fragment custom blur">TRE tenancy ✅</li>
                             <li class="fragment custom blur">MVP implementation on Azure ✅</li>
                             <li class="fragment custom blur">Job submission API 🚧</li>
                         </ul>
@@ -440,16 +441,16 @@
                     <h3>Lessons</h3>
                     <ul>
                         <li>Multi-party governance is <b>difficult</b></li>
-                        <li>K8s is becoming <b>standard</b></li>
+                        <!-- <li>K8s is becoming <b>standard</b></li> -->
                         <li><b>Self-service HPC</b> has arrived</li>
                         <li>K8s implementations <b>differ</b></li>
                         <li><b>Don't</b> reinvent the wheel</li>
                     </ul>
                     <aside data-markdown class="notes">
                         - Governance is difficult with multiple parties, don't solve it unless you have to
-                        - K8s is becoming a standard base for private-cloud-HPC, and TRE builders (K8TRE, UCL, Lancaster)
-                        - You cannot expect to build one giant helm chart which works everywhere
-                        - Don't reinvent the wheel
+                        - Private-cloud-HPC is becoming an important part of the UK HPC landscape, with K8s a key offering
+                        - K8s implementations differ, you cannot expect to build one giant helm chart which works everywhere
+                        - Not an original observation, don't reinvent the wheel
                             - We have built on a lot of mature FOSS projects
                             - We would have little hope of making something functional and sustainable if we tried to build it from scratch
                     </aside>
@@ -459,26 +460,28 @@
                     <h3>Future</h3>
                     <div class="columns">
                         <div class="column">
-                            <p>Cardiac Digital Twin</p>
+                            <h4>Cardiac digital twin</h4>
                             🫀
                         </div>
                         <div class="column">
-                            <p>Scaling to many nodes</p>
+                            <h4>Scaling to many nodes</h4>
                             🚀
                         </div>
                         <div class="column">
-                            <p>Confidential computing</p>
+                            <h4>Confidential computing</h4>
                             🔐
                         </div>
                     </div>
                     <aside data-markdown class="notes">
-                        - Real workflow on Dawn
-                            - Running a real workflow, with sensitive data is necessary to prove we can resolve governance
-                        - Multi-node
-                            - To truly make the most of HPC, we need to show we can scale to tens or hundreds of nodes/GPUs
-                        - Confidential Computing
-                            - Remove the need to trust infrastructure admins, even a motivated and privileged attacker couldn't read FRIDGE data in memory.
-                            - Adds support for bring your own compute, when you can't or don't want to configure host for high security
+                        - **What's next***
+                        - Workflow using cadiac data as part of a digital twin project on Dawn
+                            - Necessary to prove we can resolve governance!
+                        - To truly make the most of HPC, we need to show we can scale to tens or hundreds of nodes/GPUs
+                            - There are challenges in keeping a tenancy secure across many nodes we need to explore
+                        - As it stands, a privileged user on the host _could_ compromise FRIDGE
+                            - We need to trust the HPC provider
+                            - Confidential computing technology could remove the need for that trust, even a motivated and privileged attacker couldn't read FRIDGE data in memory
+                            - Also adds support for bring your own compute, when you can't or don't want to configure host for high security
                     </aside>
                 </section>
                 <!-- Acknowledgements -->
